@@ -1,3 +1,4 @@
+import { SelectField, SelectOption } from "@/components/ui/select-field";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -217,19 +218,25 @@ function EditorForm({
               <TabsContent value="basic">
                 {!e && !parent && (
                   <div className="field">
-                    <Label>资料类型</Label>
-                    <select
-                      {...form.register("kind")}
-                      className="native-select"
+                    <Label htmlFor="kind">资料类型</Label>
+                    <SelectField
+                      id="kind"
+                      value={form.watch("kind")}
+                      onValueChange={(value) =>
+                        form.setValue("kind", value, {
+                          shouldDirty: true,
+                          shouldValidate: true,
+                        })
+                      }
                     >
                       {["character", "scene", "story", "prop", "sound"].map(
                         (t) => (
-                          <option value={t} key={t}>
+                          <SelectOption value={t} key={t}>
                             {labels[t]}
-                          </option>
+                          </SelectOption>
                         ),
                       )}
-                    </select>
+                    </SelectField>
                   </div>
                 )}
                 {field("name", "名称 *")}
@@ -260,15 +267,20 @@ function EditorForm({
                   {field("height", "赤脚制作身高（cm，未知留空）")}
                   <div className="field">
                     <Label htmlFor="heightStatus">身高状态</Label>
-                    <select
+                    <SelectField
                       id="heightStatus"
-                      className="native-select"
-                      {...form.register("heightStatus")}
+                      value={form.watch("heightStatus")}
+                      onValueChange={(value) =>
+                        form.setValue("heightStatus", value, {
+                          shouldDirty: true,
+                          shouldValidate: true,
+                        })
+                      }
                     >
-                      <option value="unknown">未知</option>
-                      <option value="proposed">制作暂定</option>
-                      <option value="confirmed">用户已确认</option>
-                    </select>
+                      <SelectOption value="unknown">未知</SelectOption>
+                      <SelectOption value="proposed">制作暂定</SelectOption>
+                      <SelectOption value="confirmed">用户已确认</SelectOption>
+                    </SelectField>
                   </div>
                 </div>
                 {field("heightSource", "数值依据 / 来源说明", true)}

@@ -1,3 +1,4 @@
+import { SelectField, SelectOption } from "@/components/ui/select-field";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -85,24 +86,24 @@ export function IssueForm({
           <div className="form-grid">
             <div>
               <Label>处理状态</Label>
-              <select
-                className="native-select"
+              <SelectField
+                aria-label="问题状态"
                 value={status}
-                onChange={(e) => setStatus(e.target.value)}
+                onValueChange={(value) => setStatus(value)}
               >
                 {["open", "in_progress", "resolved", "verified"].map((v) => (
-                  <option key={v} value={v}>
+                  <SelectOption key={v} value={v}>
                     {labels[v]}
-                  </option>
+                  </SelectOption>
                 ))}
-              </select>
+              </SelectField>
             </div>
             <div>
               <Label>影响程度</Label>
-              <select
-                className="native-select"
+              <SelectField
+                aria-label="问题严重程度"
                 value={severity}
-                onChange={(e) => setSeverity(e.target.value)}
+                onValueChange={(value) => setSeverity(value)}
               >
                 {[
                   ["note", "备注"],
@@ -110,11 +111,11 @@ export function IssueForm({
                   ["major", "明显影响"],
                   ["blocking", "阻碍制作"],
                 ].map(([v, t]) => (
-                  <option key={v} value={v}>
+                  <SelectOption key={v} value={v}>
                     {t}
-                  </option>
+                  </SelectOption>
                 ))}
-              </select>
+              </SelectField>
             </div>
           </div>
           <div className="form-grid">
@@ -195,19 +196,19 @@ export function ReviewForm({
           }}
         >
           <Label>审阅状态</Label>
-          <select
-            className="native-select"
+          <SelectField
+            aria-label="修订审阅状态"
             value={status}
-            onChange={(e) => setStatus(e.target.value)}
+            onValueChange={(value) => setStatus(value)}
           >
             {["draft", "pending_review", "needs_changes", "accepted"].map(
               (s) => (
-                <option key={s} value={s}>
+                <SelectOption key={s} value={s}>
                   {labels[s]}
-                </option>
+                </SelectOption>
               ),
             )}
-          </select>
+          </SelectField>
           <Label>用户验收依据</Label>
           <Textarea
             value={proof}
@@ -279,27 +280,27 @@ export function SelectionForm({
           }}
         >
           <Label>目标剧本</Label>
-          <select
-            className="native-select"
+          <SelectField
+            aria-label="目标剧本"
             value={scope}
             required
-            onChange={(e) => setScope(e.target.value)}
+            onValueChange={(value) => setScope(value)}
           >
-            <option value="">请选择剧本</option>
+            <SelectOption value="">请选择剧本</SelectOption>
             {stories.data?.items.map((e) => (
-              <option key={e.id} value={e.id}>
+              <SelectOption key={e.id} value={e.id}>
                 {e.name}
-              </option>
+              </SelectOption>
             ))}
-          </select>
+          </SelectField>
           <Label>引用用途</Label>
-          <select
-            className="native-select"
+          <SelectField
+            aria-label="引用用途"
             value={slot}
             required
-            onChange={(e) => setSlot(e.target.value)}
+            onValueChange={(value) => setSlot(value)}
           >
-            <option value="">请选择用途</option>
+            <SelectOption value="">请选择用途</SelectOption>
             {Array.from(
               new Set([
                 defaultSlot,
@@ -308,7 +309,7 @@ export function SelectionForm({
             )
               .filter(Boolean)
               .map((s) => (
-                <option key={s} value={s}>
+                <SelectOption key={s} value={s}>
                   {s.startsWith("character.")
                     ? "角色 · " + s.split(".")[1]
                     : s.startsWith("scene.")
@@ -318,10 +319,10 @@ export function SelectionForm({
                         : s.startsWith("board.")
                           ? "分镜合集 · " + s.slice(6)
                           : s}
-                </option>
+                </SelectOption>
               ))}
-            <option value="reference.补充参考">补充参考</option>
-          </select>
+            <SelectOption value="reference.补充参考">补充参考</SelectOption>
+          </SelectField>
           <p className="hint">
             用途由素材归属预填，也可以替换剧本中已有的引用。
           </p>

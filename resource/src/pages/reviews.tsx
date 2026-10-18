@@ -1,3 +1,4 @@
+import { SelectField, SelectOption } from "@/components/ui/select-field";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -26,26 +27,23 @@ export default function Reviews() {
         </div>
       </div>
       <div className="filter-bar">
-        <select
-          className="native-select"
+        <SelectField
           aria-label="问题状态筛选"
           value={status}
-          onChange={(e) =>
+          onValueChange={(value) =>
             setP((p) => {
-              e.target.value
-                ? p.set("status", e.target.value)
-                : p.delete("status");
+              value ? p.set("status", value) : p.delete("status");
               return p;
             })
           }
         >
-          <option value="">全部状态</option>
+          <SelectOption value="">全部状态</SelectOption>
           {["open", "in_progress", "resolved", "verified"].map((s) => (
-            <option key={s} value={s}>
+            <SelectOption key={s} value={s}>
               {labels[s]}
-            </option>
+            </SelectOption>
           ))}
-        </select>
+        </SelectField>
         {entity && (
           <Button
             variant="outline"

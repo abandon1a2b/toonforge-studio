@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
   Layers,
@@ -15,7 +15,6 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -48,8 +47,6 @@ const management = [
   ["/manage/settings", "数据与备份", Settings],
 ] as const;
 export function Shell() {
-  const navigate = useNavigate();
-  const [search, setSearch] = useState("");
   const [mobile, setMobile] = useState(false);
   const jobs = useQuery({
     queryKey: ["jobs"],
@@ -79,6 +76,11 @@ export function Shell() {
           ))}
         </nav>
         <div className="header-actions">
+          <Button variant="ghost" size="icon" asChild>
+            <Link to="/search" aria-label="搜索素材库">
+              <Search size={16} />
+            </Link>
+          </Button>
           <Button variant="ghost" asChild>
             <Link to="/import">
               <Upload size={15} />
@@ -134,26 +136,6 @@ export function Shell() {
           </Sheet>
         </div>
       </header>
-      <div className="global-toolbar">
-        <Link to="/search" className="subtle">
-          角色、场景与故事，持续积累。
-        </Link>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            navigate("/search?q=" + encodeURIComponent(search));
-          }}
-        >
-          <Search size={16} />
-          <Input
-            aria-label="搜索整个素材库"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="搜索角色、场景、标签或文件…"
-          />
-          <kbd>↵</kbd>
-        </form>
-      </div>
       <main className="app-main">
         <Outlet />
       </main>

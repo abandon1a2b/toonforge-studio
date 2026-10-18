@@ -1,3 +1,5 @@
+import { Checkbox } from "@/components/ui/checkbox";
+import { SelectField, SelectOption } from "@/components/ui/select-field";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -234,15 +236,12 @@ export default function ImportPage() {
             </div>
             {items.map((f) => (
               <label className="file-choice" key={f.path}>
-                <input
-                  type="checkbox"
+                <Checkbox
                   checked={selected.has(f.path)}
-                  onChange={(ev) =>
+                  onCheckedChange={(checked) =>
                     setSelected((old) => {
                       const next = new Set(old);
-                      ev.target.checked
-                        ? next.add(f.path)
-                        : next.delete(f.path);
+                      checked === true ? next.add(f.path) : next.delete(f.path);
                       return next;
                     })
                   }
@@ -267,32 +266,32 @@ export default function ImportPage() {
           <aside className="panel stack">
             <h2>批量归属与分类</h2>
             <Label>所属角色、造型、场景或剧本</Label>
-            <select
-              className="native-select"
+            <SelectField
+              aria-label="资源归属"
               value={entity}
-              onChange={(e) => setEntity(e.target.value)}
+              onValueChange={(value) => setEntity(value)}
             >
-              <option value="">请选择归属</option>
+              <SelectOption value="">请选择归属</SelectOption>
               {all.data?.items
                 .filter((e) => !["clip", "shot"].includes(e.type))
                 .map((e) => (
-                  <option key={e.id} value={e.id}>
+                  <SelectOption key={e.id} value={e.id}>
                     {labels[e.type]} / {e.name}
-                  </option>
+                  </SelectOption>
                 ))}
-            </select>
+            </SelectField>
             <Label>素材用途</Label>
-            <select
-              className="native-select"
+            <SelectField
+              aria-label="资源分类"
               value={role}
-              onChange={(e) => setRole(e.target.value)}
+              onValueChange={(value) => setRole(value)}
             >
               {roles.map((r) => (
-                <option key={r} value={r}>
+                <SelectOption key={r} value={r}>
                   {labels[r]}
-                </option>
+                </SelectOption>
               ))}
-            </select>
+            </SelectField>
             <Label>备注</Label>
             <Textarea value={note} onChange={(e) => setNote(e.target.value)} />
             <details>

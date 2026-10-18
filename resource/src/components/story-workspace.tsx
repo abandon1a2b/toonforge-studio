@@ -1,3 +1,4 @@
+import { SelectField, SelectOption } from "@/components/ui/select-field";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -344,26 +345,24 @@ function StoryCast({ entity: e }: { entity: Entity }) {
           <div className="cast-editor">
             {draft.map((c, i) => (
               <div className="cast-edit-row" key={i}>
-                <select
-                  className="native-select"
+                <SelectField
+                  aria-label="本篇演员"
                   value={str(c.id)}
-                  onChange={(ev) =>
+                  onValueChange={(value) =>
                     setDraft((old) =>
                       old.map((v, n) =>
-                        n === i
-                          ? { id: ev.target.value, role: str(c.role) }
-                          : v,
+                        n === i ? { id: value, role: str(c.role) } : v,
                       ),
                     )
                   }
                 >
-                  <option value="">选择角色</option>
+                  <SelectOption value="">选择角色</SelectOption>
                   {all.data?.items.map((a) => (
-                    <option key={a.id} value={str(a.metadata.id)}>
+                    <SelectOption key={a.id} value={str(a.metadata.id)}>
                       {a.name}
-                    </option>
+                    </SelectOption>
                   ))}
-                </select>
+                </SelectField>
                 <Input
                   placeholder="用途：主演 / 路人 / 旁白"
                   value={str(c.role)}
@@ -375,19 +374,18 @@ function StoryCast({ entity: e }: { entity: Entity }) {
                     )
                   }
                 />
-                <select
-                  className="native-select"
+                <SelectField
                   aria-label="本篇服装造型"
                   value={str(c.variant)}
-                  onChange={(ev) =>
+                  onValueChange={(value) =>
                     setDraft((old) =>
                       old.map((v, n) =>
-                        n === i ? { ...v, variant: ev.target.value } : v,
+                        n === i ? { ...v, variant: value } : v,
                       ),
                     )
                   }
                 >
-                  <option value="">基础造型</option>
+                  <SelectOption value="">基础造型</SelectOption>
                   {looks.data?.items
                     .filter(
                       (look) => look.parent_id === "character:" + str(c.id),
@@ -396,9 +394,9 @@ function StoryCast({ entity: e }: { entity: Entity }) {
                       const id =
                         str(look.metadata.id) || look.id.split(":").pop() || "";
                       return (
-                        <option key={look.id} value={id}>
+                        <SelectOption key={look.id} value={id}>
                           {look.name}
-                        </option>
+                        </SelectOption>
                       );
                     })}
                   {str(c.variant) &&
@@ -408,11 +406,11 @@ function StoryCast({ entity: e }: { entity: Entity }) {
                         (str(look.metadata.id) || look.id.split(":").pop()) ===
                           c.variant,
                     ) && (
-                      <option value={str(c.variant)}>
+                      <SelectOption value={str(c.variant)}>
                         当前服装：{str(c.variant)}
-                      </option>
+                      </SelectOption>
                     )}
-                </select>
+                </SelectField>
                 <Button
                   variant="ghost"
                   onClick={() =>
@@ -949,15 +947,15 @@ export function ContextDialog({
             placeholder="shot-014,shot-015"
             aria-label="镜号列表"
           />
-          <select
-            className="native-select"
+          <SelectField
+            aria-label="参考包用途"
             value={purpose}
-            onChange={(e) => setPurpose(e.target.value)}
+            onValueChange={(value) => setPurpose(value)}
           >
-            <option value="video">视频镜头</option>
-            <option value="image">镜头原画</option>
-            <option value="audio">声音</option>
-          </select>
+            <SelectOption value="video">视频镜头</SelectOption>
+            <SelectOption value="image">镜头原画</SelectOption>
+            <SelectOption value="audio">声音</SelectOption>
+          </SelectField>
           <Button>构建</Button>
         </form>
         {data.isFetching && <Loading />}

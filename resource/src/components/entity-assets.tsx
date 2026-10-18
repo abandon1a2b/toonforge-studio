@@ -1,3 +1,5 @@
+import { Checkbox } from "@/components/ui/checkbox";
+import { SelectField, SelectOption } from "@/components/ui/select-field";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -41,28 +43,26 @@ export function EntityAssets({
           }}
           placeholder="搜索素材名称或标签"
         />
-        <select
-          className="native-select"
+        <SelectField
           aria-label="素材用途分类"
           value={role}
-          onChange={(e) => {
-            setRole(e.target.value);
+          onValueChange={(value) => {
+            setRole(value);
             setOffset(0);
           }}
         >
-          <option value="">全部分类</option>
+          <SelectOption value="">全部分类</SelectOption>
           {roles.map((r) => (
-            <option key={r} value={r}>
+            <SelectOption key={r} value={r}>
               {labels[r]}
-            </option>
+            </SelectOption>
           ))}
-        </select>
+        </SelectField>
         <label className="check-label">
-          <input
-            type="checkbox"
+          <Checkbox
             checked={history}
-            onChange={(e) => {
-              setHistory(e.target.checked);
+            onCheckedChange={(checked) => {
+              setHistory(checked === true);
               setOffset(0);
             }}
           />

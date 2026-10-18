@@ -98,7 +98,7 @@ small {
 svg {
   flex-shrink: 0;
 }
-input[type="checkbox"] {
+[data-slot="checkbox"] {
   accent-color: var(--primary);
   width: 16px;
   height: 16px;
@@ -131,37 +131,38 @@ details[open] > summary {
 }
 .app-header {
   position: sticky;
-  top: 16px;
+  top: 8px;
   z-index: 30;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  max-width: 1280px;
-  width: calc(100% - 64px);
-  margin: 20px auto 0;
-  min-height: 69px;
-  padding: 11px 23px;
+  gap: 12px;
+  max-width: 1440px;
+  width: calc(100% - 40px);
+  margin: 10px auto 0;
+  min-height: 48px;
+  padding: 5px 16px;
   border: 1px solid #dce1ea;
   border-radius: 999px;
-  background: #f9fafdef;
+  background: rgb(249 250 253 / 66%);
   box-shadow:
     0 1px 2px #28375d05,
     inset 0 1px 0 #fff;
-  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  backdrop-filter: blur(20px) saturate(150%);
 }
 .brand {
   display: flex;
   align-items: center;
   gap: 9px;
   color: var(--primary);
-  font-size: 24px;
-  letter-spacing: -1px;
+  font-size: 20px;
+  letter-spacing: -0.6px;
   font-weight: 750;
 }
 .brand > svg {
-  width: 27px;
-  height: 27px;
+  width: 23px;
+  height: 23px;
 }
 .brand small {
   font-size: 8px;
@@ -176,7 +177,7 @@ details[open] > summary {
   align-items: center;
 }
 .desktop-nav > a {
-  padding: 8px 17px;
+  padding: 5px 13px;
   border: 1px solid transparent;
   border-radius: 999px;
   font-size: 12px;
@@ -199,7 +200,7 @@ details[open] > summary {
   font-size: 12px;
 }
 .account-button {
-  background: #f6f8fc;
+  background: transparent;
 }
 .account-button b {
   display: inline-grid;
@@ -211,49 +212,10 @@ details[open] > summary {
   width: 18px;
   height: 18px;
 }
-.global-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  max-width: 1280px;
-  margin: 23px auto 0;
-  padding: 0 2px;
-}
-.global-toolbar form {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 4px 13px;
-  max-width: 340px;
-  width: 40%;
-  color: #8a94a6;
-}
-.global-toolbar input {
-  border: 0;
-  box-shadow: none;
-  background: transparent;
-  height: 32px;
-  font-size: 12px;
-  padding: 0;
-}
-.global-toolbar input:focus-visible {
-  box-shadow: none;
-}
-.global-toolbar kbd {
-  font-size: 10px;
-  color: #b2b7c2;
-}
-.global-toolbar > a {
-  font-size: 11px;
-  letter-spacing: 0.4px;
-}
 .app-main {
-  max-width: 1280px;
-  margin: 26px auto 0;
+  max-width: 1440px;
+  width: calc(100% - 40px);
+  margin: 18px auto 0;
   min-height: 65vh;
 }
 .app-footer {
@@ -276,11 +238,11 @@ details[open] > summary {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 24px;
-  margin: 25px 0 29px;
+  gap: 16px;
+  margin: 0 0 16px;
 }
 .page-intro h1 {
-  margin: 9px 0;
+  margin: 4px 0;
 }
 .page-intro p:not(.eyebrow) {
   font-size: 12px;
@@ -519,9 +481,9 @@ details[open] > summary {
 .panel {
   background: #fff;
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 23px;
-  margin-bottom: 20px;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 14px;
 }
 .panel > h2 {
   margin-bottom: 15px;
@@ -536,7 +498,7 @@ details[open] > summary {
   justify-content: space-between;
   align-items: center;
   gap: 15px;
-  margin: 20px 0 17px;
+  margin: 14px 0 12px;
 }
 .panel > .section-heading {
   margin-top: 0;
@@ -552,25 +514,22 @@ details[open] > summary {
 .asset-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 18px;
+  gap: 12px;
 }
 .entity-card {
   display: block;
   background: #fff;
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 8px;
   overflow: hidden;
-  transition:
-    transform 0.15s,
-    box-shadow 0.15s;
+  transition: border-color 0.15s;
   min-width: 0;
 }
 .entity-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 7px 20px #27396309;
+  border-color: #a6aed5;
 }
 .entity-image {
-  height: 170px;
+  height: 142px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -584,7 +543,7 @@ details[open] > summary {
   padding: 10px;
 }
 .entity-card-body {
-  padding: 17px;
+  padding: 10px 12px;
 }
 .entity-card-body h3 {
   font-size: 14px;
@@ -593,7 +552,7 @@ details[open] > summary {
 .entity-card-body p {
   font-size: 10px;
   color: #929bab;
-  margin: 5px 0 11px;
+  margin: 3px 0 7px;
 }
 .tags {
   display: flex;
@@ -603,7 +562,7 @@ details[open] > summary {
 .tags [data-slot="badge"] {
   font-size: 9px;
   font-weight: 400;
-  padding: 3px 6px;
+  padding: 1px 5px;
   color: #8b94a7;
   background: #f7f8fc;
   border-color: #ecedf5;
@@ -612,7 +571,7 @@ details[open] > summary {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 23px 0;
+  margin: 12px 0 16px;
   flex-wrap: wrap;
 }
 .filter-bar > input {
@@ -624,24 +583,9 @@ details[open] > summary {
 .filter-bar > input:nth-child(2) {
   max-width: 180px;
 }
-.filter-bar > select {
+.filter-bar > [data-slot="select-trigger"] {
   width: auto;
   max-width: 240px;
-}
-.native-select {
-  width: 100%;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: #fff;
-  color: var(--foreground);
-  font: inherit;
-  font-size: 13px;
-  padding: 9px 11px;
-  min-height: 38px;
-}
-.native-select:focus-visible {
-  outline: 2px solid #acb5f0;
-  outline-offset: 1px;
 }
 .check-label {
   display: inline-flex;
@@ -732,8 +676,8 @@ details[open] > summary {
 .field {
   display: flex;
   flex-direction: column;
-  gap: 9px;
-  margin: 19px 0;
+  gap: 6px;
+  margin: 12px 0;
 }
 .field label {
   font-size: 12px;
@@ -765,7 +709,7 @@ details[open] > summary {
   justify-content: flex-end;
   align-items: center;
   gap: 10px;
-  margin-top: 20px;
+  margin-top: 14px;
 }
 .success-text {
   color: #5e8a66;
@@ -786,12 +730,12 @@ details[open] > summary {
 .entity-header {
   display: flex;
   align-items: center;
-  gap: 24px;
-  margin: 20px 0 27px;
+  gap: 16px;
+  margin: 12px 0 16px;
 }
 .entity-cover {
-  width: 175px;
-  height: 125px;
+  width: 140px;
+  height: 100px;
   background: #e9edf5;
   border-radius: 12px;
   display: flex;
@@ -834,18 +778,18 @@ details[open] > summary {
   gap: 5px;
   flex-wrap: wrap;
   height: auto;
-  min-height: 44px;
+  min-height: 36px;
   background: transparent;
   border-bottom: 1px solid var(--border);
   border-radius: 0;
   width: 100%;
-  padding-bottom: 12px;
-  margin-bottom: 15px;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
 }
 .entity-tabs > [data-slot="tabs-list"] > button {
   flex: none;
   font-size: 12px;
-  padding: 9px 15px;
+  padding: 6px 11px;
   color: #8b94a7;
 }
 .entity-tabs > [data-slot="tabs-list"] > button[data-state="active"] {
@@ -944,8 +888,8 @@ details[open] > summary {
   text-align: left;
   justify-content: space-between;
   gap: 20px;
-  padding: 21px;
-  margin-bottom: 14px;
+  padding: 14px;
+  margin-bottom: 10px;
 }
 .version-row strong {
   font-size: 13px;
@@ -966,9 +910,9 @@ details[open] > summary {
   gap: 30px;
   border: 1px solid var(--border);
   background: white;
-  padding: 23px;
-  border-radius: 13px;
-  margin-bottom: 22px;
+  padding: 14px 16px;
+  border-radius: 8px;
+  margin-bottom: 14px;
 }
 .workspace-summary > div {
   display: flex;
@@ -1246,8 +1190,8 @@ details[open] > summary {
   align-items: center;
   gap: 13px;
   border: 1px dashed #bdc8ed;
-  border-radius: 16px;
-  padding: 40px 25px;
+  border-radius: 8px;
+  padding: 24px 20px;
   background: #f0f3fd;
   color: #8c9bc6;
   cursor: pointer;
@@ -1396,16 +1340,15 @@ details[open] > summary {
   line-height: 1.8;
 }
 [data-slot="tabs-content"] {
-  margin-top: 20px;
+  margin-top: 12px;
 }
 @media (min-width: 1600px) {
   .app-main,
-  .app-footer,
-  .global-toolbar {
-    max-width: 1360px;
+  .app-footer {
+    max-width: 1440px;
   }
   .app-header {
-    max-width: 1360px;
+    max-width: 1440px;
   }
   .home-bento {
     grid-template-rows: 265px 265px;
@@ -1426,13 +1369,12 @@ details[open] > summary {
 }
 @media (max-width: 1360px) {
   .app-main,
-  .app-footer,
-  .global-toolbar {
-    margin-left: 32px;
-    margin-right: 32px;
+  .app-footer {
+    margin-left: auto;
+    margin-right: auto;
   }
   .desktop-nav > a {
-    padding: 8px 13px;
+    padding: 5px 11px;
   }
   .home-bento {
     grid-template-columns: 1.04fr 1fr 0.9fr;
@@ -1524,10 +1466,10 @@ details[open] > summary {
 @media (max-width: 760px) {
   .app-header {
     width: calc(100% - 28px);
-    margin: 14px auto 0;
-    min-height: 61px;
-    top: 10px;
-    padding: 10px 15px;
+    margin: 8px auto 0;
+    min-height: 44px;
+    top: 6px;
+    padding: 4px 10px;
   }
   .brand {
     font-size: 21px;
@@ -1543,20 +1485,9 @@ details[open] > summary {
     font-size: 11px;
   }
   .app-main,
-  .app-footer,
-  .global-toolbar {
-    margin-left: 17px;
-    margin-right: 17px;
-  }
-  .global-toolbar {
-    margin-top: 20px;
-  }
-  .global-toolbar > a {
-    display: none;
-  }
-  .global-toolbar form {
-    width: 100%;
-    max-width: none;
+  .app-footer {
+    margin-left: auto;
+    margin-right: auto;
   }
   .app-main {
     margin-top: 20px;
@@ -1565,7 +1496,7 @@ details[open] > summary {
     align-items: flex-start;
     flex-wrap: wrap;
     gap: 17px;
-    margin: 18px 0 22px;
+    margin: 0 0 14px;
   }
   .page-intro h1 {
     font-size: 26px;
@@ -1708,7 +1639,7 @@ details[open] > summary {
   .filter-bar > input:nth-child(2) {
     max-width: none;
   }
-  .filter-bar > select {
+  .filter-bar > [data-slot="select-trigger"] {
     max-width: none;
   }
   .list-table {
@@ -1745,5 +1676,50 @@ details[open] > summary {
   }
   .import-drop p {
     text-align: center;
+  }
+}
+
+/* Compact shared controls: the same density on lists, editors and workspaces. */
+[data-slot="button"],
+[data-slot="input"],
+[data-slot="select-trigger"] {
+  box-shadow: none;
+}
+[data-slot="select-trigger"] {
+  width: 100%;
+  min-width: 0;
+  background: #fff;
+  height: 34px;
+}
+[data-slot="select-content"] {
+  max-width: calc(100vw - 2rem);
+}
+[data-slot="select-item"] {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.app-header [data-slot="button"] {
+  height: 32px;
+}
+.page-intro h1 {
+  font-size: 26px;
+}
+.entity-title h1 {
+  font-size: 25px;
+  margin: 4px 0 8px;
+}
+.entity-image img {
+  padding: 6px;
+}
+@media (max-width: 760px) {
+  .app-main {
+    width: calc(100% - 28px);
+    margin-top: 14px;
+  }
+  .entity-image {
+    height: 130px;
+  }
+  .entity-card-body {
+    padding: 10px;
   }
 }

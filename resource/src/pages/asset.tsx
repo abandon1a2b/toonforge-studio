@@ -1,3 +1,4 @@
+import { SelectField, SelectOption } from "@/components/ui/select-field";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -216,18 +217,17 @@ function AssetMetadata({ asset: a }: { asset: Artifact }) {
     >
       <h2>整理素材</h2>
       <Label htmlFor="asset-role">分类</Label>
-      <select
+      <SelectField
         id="asset-role"
-        className="native-select"
         value={role}
-        onChange={(e) => setRole(e.target.value)}
+        onValueChange={(value) => setRole(value)}
       >
         {roles.map((r) => (
-          <option key={r} value={r}>
+          <SelectOption key={r} value={r}>
             {labels[r]}
-          </option>
+          </SelectOption>
         ))}
-      </select>
+      </SelectField>
       <Label htmlFor="asset-tags">标签，逗号分隔</Label>
       <Input
         id="asset-tags"

@@ -1,3 +1,5 @@
+import { Checkbox } from "@/components/ui/checkbox";
+import { SelectField, SelectOption } from "@/components/ui/select-field";
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -174,10 +176,9 @@ function Settings() {
             完整备份包括数据库快照、登记媒体和校验清单；恢复只写入新的空目录。
           </p>
           <label className="check-label mb-4">
-            <input
-              type="checkbox"
+            <Checkbox
               checked={include}
-              onChange={(e) => setInclude(e.target.checked)}
+              onCheckedChange={(checked) => setInclude(checked === true)}
             />
             包含全部登记媒体（可独立恢复）
           </label>
@@ -226,16 +227,17 @@ function Settings() {
         <section className="panel">
           <h2>界面偏好</h2>
           <Label>默认素材列表方式</Label>
-          <select
-            className="native-select mt-3"
+          <SelectField
+            aria-label="默认浏览方式"
+            className="mt-3"
             value={str(prefs.data?.["studio.view"]) || "grid"}
-            onChange={(e) =>
-              pref.mutate({ key: "studio.view", value: e.target.value })
+            onValueChange={(value) =>
+              pref.mutate({ key: "studio.view", value: value })
             }
           >
-            <option value="grid">缩略图网格</option>
-            <option value="list">资料列表</option>
-          </select>
+            <SelectOption value="grid">缩略图网格</SelectOption>
+            <SelectOption value="list">资料列表</SelectOption>
+          </SelectField>
           <p className="subtle">
             音频默认由点击触发。历史版本默认折叠，可以在资源列表中展开。
           </p>
@@ -306,20 +308,21 @@ function Archive() {
           <p>归档保留媒体、版本及引用。恢复后重新出现在日常列表中。</p>
         </div>
       </div>
-      <select
-        className="native-select mb-5"
+      <SelectField
+        aria-label="归档资料类型"
+        className="mb-5"
         value={type}
-        onChange={(e) => setType(e.target.value)}
+        onValueChange={(value) => setType(value)}
       >
-        <option value="">全部类型</option>
+        <SelectOption value="">全部类型</SelectOption>
         {["character", "look", "scene", "story", "prop", "sound", "mix"].map(
           (t) => (
-            <option key={t} value={t}>
+            <SelectOption key={t} value={t}>
               {labels[t]}
-            </option>
+            </SelectOption>
           ),
         )}
-      </select>
+      </SelectField>
       {q.isPending ? (
         <Loading />
       ) : q.error ? (
@@ -478,10 +481,9 @@ function TagManager() {
           <Label>标签名称</Label>
           <Input value={name} onChange={(e) => setName(e.target.value)} />
           <label className="check-label">
-            <input
-              type="checkbox"
+            <Checkbox
               checked={merge}
-              onChange={(e) => setMerge(e.target.checked)}
+              onCheckedChange={(checked) => setMerge(checked === true)}
             />
             若同名标签已存在，明确合并到该标签
           </label>
@@ -521,13 +523,12 @@ function TagManager() {
               .filter((e) => !["shot", "clip"].includes(e.type))
               .map((e) => (
                 <label className="check-label" key={e.id}>
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     checked={members.has(e.id)}
-                    onChange={(ev) =>
+                    onCheckedChange={(checked) =>
                       setMembers((old) => {
                         const next = new Set(old);
-                        ev.target.checked ? next.add(e.id) : next.delete(e.id);
+                        checked === true ? next.add(e.id) : next.delete(e.id);
                         return next;
                       })
                     }

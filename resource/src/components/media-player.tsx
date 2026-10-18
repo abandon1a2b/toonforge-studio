@@ -1,3 +1,4 @@
+import { Checkbox } from "@/components/ui/checkbox";
 import { useRef, useState } from "react";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import {
@@ -186,10 +187,9 @@ export function CompareDialog({
         ) : (
           <>
             <label className="check-label">
-              <input
-                type="checkbox"
+              <Checkbox
                 checked={sync}
-                onChange={(e) => setSync(e.target.checked)}
+                onCheckedChange={(checked) => setSync(checked === true)}
               />
               声音或视频从同一时间点对比；也可关闭后分别定位
             </label>

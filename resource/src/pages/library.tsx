@@ -1,3 +1,4 @@
+import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
 import { useParams, useSearchParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -236,11 +237,10 @@ export default function Library({ search = false }: { search?: boolean }) {
       </form>
       {mediaMode && (
         <label className="subtle inline-flex gap-2 mb-4">
-          <input
-            type="checkbox"
+          <Checkbox
             checked={params.get("history") === "1"}
-            onChange={(e) =>
-              update({ history: e.target.checked ? "1" : "", offset: "" })
+            onCheckedChange={(checked) =>
+              update({ history: checked === true ? "1" : "", offset: "" })
             }
           />
           包含历史版本

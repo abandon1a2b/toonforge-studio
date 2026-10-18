@@ -1,3 +1,4 @@
+import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from "react-router-dom";
 import {
   FileAudio,
@@ -162,11 +163,10 @@ export function AssetCard({
       <div className="relative">
         {onSelect && (
           <label className="asset-check">
-            <input
+            <Checkbox
               aria-label={"对比 " + a.relative_path.split("/").pop()}
-              type="checkbox"
               checked={selected}
-              onChange={(e) => onSelect(e.target.checked)}
+              onCheckedChange={(checked) => onSelect(checked === true)}
             />
           </label>
         )}
