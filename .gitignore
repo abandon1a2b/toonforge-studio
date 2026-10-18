@@ -1,0 +1,10 @@
+/bin/
+/resource/node_modules/
+/.cache/
+/.DS_Store
+*.log
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+.toonforge/

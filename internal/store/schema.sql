@@ -1,0 +1,19 @@
+-- Schema version 1. Media content is stored in immutable, hash-addressed ordinary files.
+PRAGMA foreign_keys = ON;
+CREATE TABLE projects(id TEXT PRIMARY KEY,name TEXT NOT NULL,storage_root TEXT NOT NULL,created_at TEXT NOT NULL);
+CREATE TABLE entities(id TEXT PRIMARY KEY,project_id TEXT NOT NULL REFERENCES projects(id),type TEXT NOT NULL CHECK(type IN ('character','look','scene','prop','sound','story','shot','clip','mix')),name TEXT NOT NULL,parent_id TEXT REFERENCES entities(id),metadata_json TEXT NOT NULL DEFAULT '{}',version INTEGER NOT NULL DEFAULT 1,archived INTEGER NOT NULL DEFAULT 0 CHECK(archived IN(0,1)));
+CREATE TABLE revisions(id TEXT PRIMARY KEY,entity_id TEXT NOT NULL REFERENCES entities(id),parent_revision_id TEXT REFERENCES revisions(id),label TEXT NOT NULL,status TEXT NOT NULL CHECK(status IN('draft','pending_review','needs_changes','accepted')),snapshot_json TEXT NOT NULL,generation_json TEXT NOT NULL DEFAULT '{}',created_at TEXT NOT NULL,created_by TEXT NOT NULL,acceptance_evidence TEXT,CHECK(status!='accepted' OR acceptance_evidence IS NOT NULL),UNIQUE(entity_id,label));
+CREATE TABLE sources(id TEXT PRIMARY KEY,url TEXT,author TEXT,license_id TEXT,license_url TEXT,attribution TEXT,rights_status TEXT NOT NULL DEFAULT 'unknown',retrieved_at TEXT,source_sha256 TEXT);
+CREATE TABLE artifacts(id TEXT PRIMARY KEY,revision_id TEXT NOT NULL REFERENCES revisions(id),source_id TEXT REFERENCES sources(id),relative_path TEXT NOT NULL,sha256 TEXT NOT NULL,media_type TEXT NOT NULL,role TEXT NOT NULL,metadata_json TEXT NOT NULL DEFAULT '{}',UNIQUE(revision_id,relative_path));
+CREATE INDEX artifacts_hash ON artifacts(sha256);
+CREATE TABLE tags(id TEXT PRIMARY KEY,namespace TEXT NOT NULL,label TEXT NOT NULL,UNIQUE(namespace,label));
+CREATE TABLE entity_tags(entity_id TEXT NOT NULL REFERENCES entities(id),tag_id TEXT NOT NULL REFERENCES tags(id),PRIMARY KEY(entity_id,tag_id));
+CREATE TABLE revision_relations(id TEXT PRIMARY KEY,from_revision_id TEXT NOT NULL REFERENCES revisions(id),to_revision_id TEXT NOT NULL REFERENCES revisions(id),kind TEXT NOT NULL CHECK(kind IN('uses','derived_from','replaces','contains','continues')),metadata_json TEXT NOT NULL DEFAULT '{}',UNIQUE(from_revision_id,to_revision_id,kind));
+CREATE INDEX relations_target ON revision_relations(to_revision_id,kind);
+CREATE TABLE selections(scope_entity_id TEXT NOT NULL REFERENCES entities(id),slot TEXT NOT NULL,revision_id TEXT NOT NULL REFERENCES revisions(id),version INTEGER NOT NULL DEFAULT 1,selected_by TEXT NOT NULL,selected_at TEXT NOT NULL,PRIMARY KEY(scope_entity_id,slot));
+CREATE TABLE issues(id TEXT PRIMARY KEY,revision_id TEXT NOT NULL REFERENCES revisions(id),shot_entity_id TEXT REFERENCES entities(id),start_ms INTEGER,end_ms INTEGER,status TEXT NOT NULL CHECK(status IN('open','in_progress','resolved','verified')),severity TEXT NOT NULL CHECK(severity IN('note','minor','major','blocking')),body TEXT NOT NULL,actor TEXT NOT NULL,version INTEGER NOT NULL DEFAULT 1,created_at TEXT NOT NULL,verification_evidence TEXT,CHECK(start_ms IS NULL OR start_ms>=0),CHECK(end_ms IS NULL OR (start_ms IS NOT NULL AND end_ms>=start_ms)),CHECK(status!='verified' OR verification_evidence IS NOT NULL));
+CREATE INDEX issues_queue ON issues(status,severity,revision_id);
+CREATE TABLE audit_events(id TEXT PRIMARY KEY,operation_id TEXT NOT NULL UNIQUE,actor TEXT NOT NULL,action TEXT NOT NULL,reason TEXT,scope_entity_id TEXT REFERENCES entities(id),before_json TEXT,after_json TEXT,created_at TEXT NOT NULL);
+CREATE TABLE schema_migrations(version INTEGER PRIMARY KEY,checksum TEXT NOT NULL,applied_at TEXT NOT NULL);
+-- Application validation enforces parent types, selection-slot ownership and physical fields.
+-- Review evidence is recorded as user-supplied text; it is not an automated quality verdict.

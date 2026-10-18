@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eu
+APP_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+if [ ! -x "$APP_DIR/bin/toonforge" ]; then
+  printf '%s\n' 'Missing binary. Build first: make build' >&2
+  exit 2
+fi
+exec "$APP_DIR/bin/toonforge" "$@"
