@@ -46,3 +46,11 @@ cd resource && npm run dev
 开发界面端口 5175，代理到 8795。生产只监听回环地址。安装 FFmpeg/ffprobe 可获得音视频探测、波形与 FLAC 浏览器转码；缺少时仍能维护资料及浏览器原生支持的媒体。
 
 [页面功能设计](design/README.md) · [实施计划](IMPLEMENTATION.md) · [CLI](docs/CLI.md) · [agent skill](skills/toonforge-studio/SKILL.md) · [验证记录](docs/VALIDATION.md)
+
+### FRP 访问：默认远程只读
+
+`serve --remote-read-only=true`（默认）允许远程查看，所有 POST/PUT/PATCH/DELETE 等写入请求必须同时满足本机 Host、本机连接、无代理转发标记及有效本机凭证。上传、资料修改、审阅、任务、设置等均在后端统一拦截；CLI 仍可在本机使用。
+
+FRP TCP 转发可能表现为 loopback 连接，因此不能只根据 IP 判断。服务启动后会将带凭证的本机编辑链接写入素材库 `.toonforge/local-editor-url.txt`，在本机浏览器打开该链接即可编辑；凭证仅存于该标签页会话，地址中的片段随即移除。普通本机地址和分享地址都是只读入口。不要分享本机编辑链接或转发此凭证。凭证文件权限为 0600，不进入 Git。
+
+若明确需要开放写入，可启动 `./toonforge --root /Users/one/Desktop/toonforge serve --remote-read-only=false`；默认保持开启。此开关不限制读取和下载已有素材。

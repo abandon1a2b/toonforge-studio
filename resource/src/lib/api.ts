@@ -1,3 +1,14 @@
+// The fragment stays in the browser and is removed immediately after import.
+const localHost = ["127.0.0.1", "localhost", "[::1]"].includes(location.hostname);
+const bootstrapToken = new URLSearchParams(location.hash.slice(1)).get("local_token");
+if (bootstrapToken) {
+  if (localHost) sessionStorage.setItem("toonforge.localToken", bootstrapToken);
+  history.replaceState(null, "", location.pathname + location.search);
+}
+export function localWriteHeaders(): Record<string, string> {
+  const token = localHost ? sessionStorage.getItem("toonforge.localToken") : null;
+  return token ? { "X-Toonforge-Local-Token": token } : {};
+}
 import {
   QueryClient,
   useMutation,
@@ -40,7 +51,7 @@ export async function get<T>(
 export async function post<T>(path: string, payload: unknown): Promise<T> {
   const r = await fetch("/api/v2/" + path, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...localWriteHeaders() },
     body: JSON.stringify(payload),
   });
   const d = await r.json();

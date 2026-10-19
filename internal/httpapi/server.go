@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
-	"net"
 	"net/http"
 	"net/url"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -20,9 +20,11 @@ import (
 )
 
 type Server struct {
-	Store  *store.Store
-	Worker *store.Worker
-	Dev    bool
+	Store          *store.Store
+	Worker         *store.Worker
+	Dev            bool
+	RemoteReadOnly bool
+	WriteToken     string
 }
 
 func New(s *store.Store, dev bool) *Server {
@@ -50,12 +52,8 @@ func fail(w http.ResponseWriter, e error) {
 }
 func number(q string) int { v, _ := strconv.Atoi(q); return v }
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	host, _, e := net.SplitHostPort(r.Host)
-	if e != nil {
-		host = r.Host
-	}
-	if host != "127.0.0.1" && host != "localhost" && host != "::1" {
-		write(w, 403, store.Record{"error": "Invalid Host"})
+	if r.Method != http.MethodGet && r.Method != http.MethodHead && r.Method != http.MethodOptions && s.RemoteReadOnly && !s.localWrite(r) {
+		write(w, http.StatusForbidden, store.Record{"error": "此入口仅供查看，请使用本机编辑入口", "code": 403})
 		return
 	}
 	w.Header().Set("X-Content-Type-Options", "nosniff")
@@ -270,8 +268,21 @@ func (s *Server) api(w http.ResponseWriter, r *http.Request) {
 	}
 	write(w, 200, out)
 }
-func Serve(ctx context.Context, s *store.Store, port int, dev bool) error {
+func Serve(ctx context.Context, s *store.Store, port int, dev bool, remoteReadOnly ...bool) error {
 	handler := New(s, dev)
+	handler.RemoteReadOnly = len(remoteReadOnly) == 0 || remoteReadOnly[0]
+	if handler.RemoteReadOnly {
+		token, err := localToken(s.Root)
+		if err != nil {
+			return err
+		}
+		handler.WriteToken = token
+		link := fmt.Sprintf("http://127.0.0.1:%d/#local_token=%s", port, token)
+		if err := os.WriteFile(filepath.Join(s.Root, ".toonforge", "local-editor-url.txt"), []byte(link+"\n"), 0600); err != nil {
+			return err
+		}
+		fmt.Println("远程只读已开启；本机编辑链接保存在 .toonforge/local-editor-url.txt（请勿分享）")
+	}
 	server := &http.Server{Addr: fmt.Sprintf("127.0.0.1:%d", port), Handler: handler, ReadHeaderTimeout: 10 * time.Second, IdleTimeout: 60 * time.Second}
 	go handler.Worker.Run(ctx)
 	go func() {

@@ -31,7 +31,7 @@ func TestHTTPBoundariesMediaAndConflict(t *testing.T) {
 		h.ServeHTTP(w, r)
 		return w
 	}
-	if w := request("GET", "/api/v2/workspace", "evil.example", "", nil); w.Code != 403 {
+	if w := request("GET", "/", "evil.example", "", nil); w.Code != 200 {
 		t.Fatal(w.Code)
 	}
 	if w := request("POST", "/api/v2/entity/create", "localhost:8795", "https://evil.example", nil); w.Code != 403 {
@@ -73,5 +73,47 @@ func TestHTTPBoundariesMediaAndConflict(t *testing.T) {
 	}
 	if w = request("GET", "/media?path=..%2Fsecret.png", "localhost:8795", "", nil); w.Code == 200 {
 		t.Fatal("path escape")
+	}
+}
+
+func TestRemoteReadOnly(t *testing.T) {
+	s, err := store.Open(t.TempDir(), "access-test")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer s.Close()
+	h := New(s, false)
+	h.RemoteReadOnly = true
+	h.WriteToken = "test-secret"
+	for _, tc := range []struct {
+		name, method, host, peer, token, forwarded string
+		want                                       int
+	}{
+		{"remote read", "GET", "studio.example", "127.0.0.1:1234", "", "", 200},
+		{"frp loopback no token", "POST", "localhost:8795", "127.0.0.1:1234", "", "", 403},
+		{"remote host with token", "POST", "studio.example", "127.0.0.1:1234", "test-secret", "", 403},
+		{"nonlocal peer", "POST", "localhost:8795", "192.0.2.1:1234", "test-secret", "", 403},
+		{"forwarded local", "POST", "localhost:8795", "127.0.0.1:1234", "test-secret", "192.0.2.1", 403},
+		{"local write", "POST", "localhost:8795", "127.0.0.1:1234", "test-secret", "", 200},
+		{"local ipv6", "POST", "[::1]:8795", "[::1]:1234", "test-secret", "", 200},
+		{"upload blocked", "PUT", "localhost:8795", "127.0.0.1:1234", "", "", 403},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			path := "/"
+			if tc.method != "GET" {
+				path = "/api/v2/entity/create"
+			}
+			r := httptest.NewRequest(tc.method, path, bytes.NewBufferString(`{"type":"scene","name":"Office","metadata":{}}`))
+			r.Header.Set("Content-Type", "application/json")
+			r.Host = tc.host
+			r.RemoteAddr = tc.peer
+			r.Header.Set("X-Toonforge-Local-Token", tc.token)
+			r.Header.Set("X-Forwarded-For", tc.forwarded)
+			w := httptest.NewRecorder()
+			h.ServeHTTP(w, r)
+			if w.Code != tc.want {
+				t.Fatalf("got %d want %d: %s", w.Code, tc.want, w.Body.String())
+			}
+		})
 	}
 }

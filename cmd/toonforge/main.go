@@ -137,9 +137,11 @@ func newRoot() *cobra.Command {
 		defer s.Close()
 		port, _ := c.Flags().GetInt("port")
 		dev, _ := c.Flags().GetBool("dev")
-		return httpapi.Serve(c.Context(), s, port, dev)
+		remoteReadOnly, _ := c.Flags().GetBool("remote-read-only")
+		return httpapi.Serve(c.Context(), s, port, dev, remoteReadOnly)
 	}}
 	serve.Flags().Int("port", 8795, "Loopback port")
+	serve.Flags().Bool("remote-read-only", true, "Require local editing credential; remote visitors can only read")
 	serve.Flags().Bool("dev", false, "Allow local Vite development origin")
 	root.AddCommand(serve)
 	for _, name := range []string{"workspace", "health", "pending", "inbox", "events", "tags", "collections", "jobs"} {

@@ -1,3 +1,4 @@
+import { localWriteHeaders } from "@/lib/api";
 import { Checkbox } from "@/components/ui/checkbox";
 import { SelectField, SelectOption } from "@/components/ui/select-field";
 import { useState } from "react";
@@ -87,7 +88,7 @@ export default function ImportPage() {
       const form = new FormData();
       form.append("file", f);
       try {
-        const r = await fetch("/api/v2/upload", { method: "POST", body: form });
+        const r = await fetch("/api/v2/upload", { method: "POST", body: form, headers: localWriteHeaders() });
         const d = await r.json();
         if (!r.ok) throw Error(d.error);
         added.push(d as FileItem);
