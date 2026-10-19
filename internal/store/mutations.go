@@ -73,6 +73,9 @@ func (s *Store) tags(ctx context.Context, tx *sql.Tx, id string, tags []string) 
 		if _, e := tx.ExecContext(ctx, "INSERT OR IGNORE INTO tags VALUES(?,?,?)", tid, ns, label); e != nil {
 			return e
 		}
+		if e := tx.QueryRowContext(ctx, "SELECT id FROM tags WHERE namespace=? AND label=?", ns, label).Scan(&tid); e != nil {
+			return e
+		}
 		if _, e := tx.ExecContext(ctx, "INSERT INTO entity_tags VALUES(?,?)", id, tid); e != nil {
 			return e
 		}

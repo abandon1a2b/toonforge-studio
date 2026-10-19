@@ -283,3 +283,21 @@ func TestCharacterDefaultsToTurnaroundAndKeepsExplicitCover(t *testing.T) {
 		t.Fatal("explicit default ignored")
 	}
 }
+
+func TestImportedTagIDsSurviveMetadataUpdates(t *testing.T) {
+	s := fixture(t)
+	if _, err := s.DB.Exec("INSERT INTO tags VALUES(?,?,?)", "tag:legacy-uuid", "franchise", "genshin"); err != nil {
+		t.Fatal(err)
+	}
+	r, err := s.Create(testctx, Record{"type": "scene", "name": "Imported tags", "tags": []string{"franchise:genshin"}, "metadata": Record{}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err = s.Update(testctx, Record{"id": r["id"], "name": r["name"], "tags": []string{"franchise:genshin"}, "metadata": r["metadata"], "expected_version": r["version"]}); err != nil {
+		t.Fatal(err)
+	}
+	var id string
+	if err = s.DB.QueryRow("SELECT tag_id FROM entity_tags WHERE entity_id=?", r["id"]).Scan(&id); err != nil || id != "tag:legacy-uuid" {
+		t.Fatal(id, err)
+	}
+}
