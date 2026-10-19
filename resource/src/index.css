@@ -1723,3 +1723,164 @@ details[open] > summary {
     padding: 10px;
   }
 }
+
+/* Character workspace: references and facts share one flat reading surface. */
+.character-header .entity-cover {
+  width: 76px;
+  height: 56px;
+  border-radius: 4px;
+}
+.character-header {
+  gap: 12px;
+  margin: 8px 0 12px;
+}
+.character-header .entity-title h1 {
+  font-size: 23px;
+}
+.character-header .entity-title > p:last-child {
+  display: none;
+}
+.character-overview {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(320px, 1.2fr);
+  gap: 16px 24px;
+  align-items: start;
+}
+.character-reference img {
+  width: 100%;
+  height: 330px;
+  object-fit: contain;
+  background: white;
+  border: 1px solid var(--border);
+}
+.character-reference .section-heading {
+  margin-top: 0;
+}
+.character-reference > p {
+  font-size: 11px;
+  margin-top: 8px;
+}
+.character-image-empty {
+  padding: 70px 20px;
+  text-align: center;
+  border: 1px dashed var(--border);
+}
+.character-facts .panel,
+.character-more .panel {
+  background: transparent;
+  padding: 12px 0;
+  margin: 0;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+}
+.character-facts .panel > h2,
+.character-more .panel > h2 {
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+.character-facts .readable-map > div {
+  grid-template-columns: 90px minmax(0, 1fr);
+  padding: 6px 0;
+  gap: 10px;
+}
+.character-basics > div {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr);
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+.character-basics dt {
+  color: var(--muted-foreground);
+}
+.character-basics small {
+  display: block;
+  font-size: 10px;
+  color: var(--muted-foreground);
+  margin-top: 4px;
+}
+.character-reference-types,
+.character-more {
+  grid-column: 1 / -1;
+}
+.character-reference-types {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+.character-reference-types h2 {
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+.character-reference-types > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+}
+.character-reference-types span {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.character-reference-types strong {
+  font-size: 12px;
+  font-weight: 500;
+}
+.character-reference-types small {
+  font-size: 10px;
+  color: var(--muted-foreground);
+}
+.default-image-action {
+  width: 100%;
+  height: 28px;
+  font-size: 11px;
+}
+.audio-resource-list {
+  border-top: 1px solid var(--border);
+}
+.audio-resource-row {
+  display: grid;
+  grid-template-columns: 18px minmax(180px, 1fr) minmax(240px, 320px) 80px;
+  gap: 14px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+.audio-resource-title {
+  min-width: 0;
+}
+.audio-resource-title > a {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.audio-resource-title small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted-foreground);
+  font-size: 10px;
+}
+.audio-resource-row audio {
+  width: 100%;
+  height: 34px;
+}
+.voice-profile {
+  margin: 0 0 12px;
+}
+@media (max-width: 760px) {
+  .character-overview {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .character-reference img {
+    height: 260px;
+  }
+  .audio-resource-row {
+    grid-template-columns: 18px minmax(0, 1fr) 80px;
+    gap: 8px;
+  }
+  .audio-resource-row audio {
+    grid-column: 2 / -1;
+    grid-row: 2;
+  }
+}

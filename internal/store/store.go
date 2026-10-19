@@ -47,7 +47,7 @@ func (e *Conflict) Error() string { return e.Message }
 var ErrNotFound = errors.New("未找到对象")
 var hashPattern = regexp.MustCompile(`^[a-f0-9]{64}$`)
 var kinds = map[string]bool{"character": true, "look": true, "scene": true, "prop": true, "sound": true, "story": true, "shot": true, "clip": true, "mix": true, "style": true}
-var Roles = map[string]bool{"reference": true, "turnaround": true, "look": true, "expression": true, "source_audio": true, "voice": true, "sfx": true, "music": true, "mix": true, "stem": true, "scene": true, "layout": true, "board": true, "frame": true, "preview": true, "video": true}
+var Roles = map[string]bool{"reference": true, "turnaround": true, "look": true, "expression": true, "portrait": true, "action": true, "source_audio": true, "voice": true, "sfx": true, "music": true, "mix": true, "stem": true, "scene": true, "layout": true, "board": true, "frame": true, "preview": true, "video": true}
 
 func ID(prefix string) string { return prefix + ":" + uuid.NewString() }
 func Now() string             { return time.Now().UTC().Format(time.RFC3339Nano) }
@@ -265,7 +265,7 @@ func (s *Store) enrich(ctx context.Context, r Record, cover bool) error {
 				return nil
 			}
 		}
-		rows, e := s.Query(ctx, `SELECT a.id FROM artifacts a JOIN revisions r ON r.id=a.revision_id LEFT JOIN files f ON f.artifact_id=a.id WHERE r.entity_id IN(SELECT id FROM entities WHERE id=? OR parent_id=?) AND a.media_type='image' ORDER BY (f.path IS NULL),CASE a.role WHEN 'look' THEN 0 WHEN 'turnaround' THEN 1 WHEN 'board' THEN 2 ELSE 3 END,a.rowid DESC LIMIT 1`, r["id"], r["id"])
+		rows, e := s.Query(ctx, `SELECT a.id FROM artifacts a JOIN revisions r ON r.id=a.revision_id LEFT JOIN files f ON f.artifact_id=a.id WHERE r.entity_id IN(SELECT id FROM entities WHERE id=? OR parent_id=?) AND a.media_type='image' ORDER BY (f.path IS NULL),CASE WHEN ?='character' THEN CASE a.role WHEN 'turnaround' THEN 0 WHEN 'look' THEN 1 WHEN 'portrait' THEN 2 ELSE 3 END ELSE CASE a.role WHEN 'look' THEN 0 WHEN 'turnaround' THEN 1 WHEN 'board' THEN 2 ELSE 3 END END,a.rowid DESC LIMIT 1`, r["id"], r["id"], r["type"])
 		if e != nil {
 			return e
 		}

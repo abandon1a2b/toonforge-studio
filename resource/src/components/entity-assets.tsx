@@ -1,20 +1,33 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { SelectField, SelectOption } from "@/components/ui/select-field";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { get } from "@/lib/api";
-import { type Page, type Artifact, roles, labels } from "@/lib/types";
+import { get, useAction } from "@/lib/api";
+import {
+  type Page,
+  type Artifact,
+  type Entity,
+  roles,
+  labels,
+  assetURL,
+  mediaURL,
+  obj,
+} from "@/lib/types";
 import { AssetCard, Pagination, Loading, ErrorBox, Empty } from "./shared";
 import { CompareDialog } from "./media-player";
 export function EntityAssets({
   entity,
   defaultRole = "",
+  mediaType = "",
+  coverOwner,
 }: {
   entity: string;
   defaultRole?: string;
+  mediaType?: string;
+  coverOwner?: Entity;
 }) {
   const [role, setRole] = useState(defaultRole),
     [history, setHistory] = useState(false),
@@ -22,12 +35,22 @@ export function EntityAssets({
     [offset, setOffset] = useState(0),
     [selected, setSelected] = useState<string[]>([]),
     [compare, setCompare] = useState(false);
+  const playing = useRef<HTMLAudioElement | null>(null);
+  const cover = useAction("entity/cover", "默认图片已更新");
   const result = useQuery({
-    queryKey: ["artifacts", entity, role, history, q, offset],
+    queryKey: ["artifacts", entity, role, mediaType, history, q, offset],
     queryFn: ({ signal }) =>
       get<Page<Artifact>>(
         "artifacts",
-        { entity, role, history: history ? 1 : 0, q, offset, limit: 24 },
+        {
+          entity,
+          role,
+          type: mediaType,
+          history: history ? 1 : 0,
+          q,
+          offset,
+          limit: 24,
+        },
         signal,
       ),
   });
@@ -52,11 +75,27 @@ export function EntityAssets({
           }}
         >
           <SelectOption value="">全部分类</SelectOption>
-          {roles.map((r) => (
-            <SelectOption key={r} value={r}>
-              {labels[r]}
-            </SelectOption>
-          ))}
+          {roles
+            .filter(
+              (r) =>
+                !mediaType ||
+                (mediaType === "audio"
+                  ? ["source_audio", "voice", "sfx", "music", "mix", "stem"]
+                  : [
+                      "turnaround",
+                      "portrait",
+                      "look",
+                      "expression",
+                      "action",
+                      "reference",
+                    ]
+                ).includes(r),
+            )
+            .map((r) => (
+              <SelectOption key={r} value={r}>
+                {labels[r]}
+              </SelectOption>
+            ))}
         </SelectField>
         <label className="check-label">
           <Checkbox
@@ -91,23 +130,97 @@ export function EntityAssets({
         </Empty>
       ) : (
         <>
-          <div className="asset-grid">
-            {result.data.items.map((a) => (
-              <AssetCard
-                key={a.id}
-                asset={a}
-                selected={selected.includes(a.id)}
-                onSelect={(checked) =>
-                  setSelected((old) =>
-                    checked
-                      ? old.length < 2
-                        ? [...old, a.id]
-                        : old
-                      : old.filter((id) => id !== a.id),
-                  )
-                }
-              />
-            ))}
+          <div
+            className={
+              mediaType === "audio" ? "audio-resource-list" : "asset-grid"
+            }
+          >
+            {result.data.items.map((a) =>
+              a.media_type === "audio" ? (
+                <article className="audio-resource-row" key={a.id}>
+                  <Checkbox
+                    aria-label={"对比 " + a.relative_path.split("/").pop()}
+                    checked={selected.includes(a.id)}
+                    onCheckedChange={(checked) =>
+                      setSelected((old) =>
+                        checked === true
+                          ? old.length < 2
+                            ? [...old, a.id]
+                            : old
+                          : old.filter((id) => id !== a.id),
+                      )
+                    }
+                  />
+                  <div className="audio-resource-title">
+                    <Link to={assetURL(a.id)}>
+                      {a.relative_path.split("/").pop()}
+                    </Link>
+                    <small>
+                      {labels[a.role] || a.role} ·{" "}
+                      {typeof obj(a.metadata.technical).duration_seconds ===
+                      "number"
+                        ? Number(
+                            obj(a.metadata.technical).duration_seconds,
+                          ).toFixed(1) + " 秒"
+                        : ""}
+                    </small>
+                  </div>
+                  <audio
+                    controls
+                    preload="none"
+                    aria-label={"播放 " + a.relative_path.split("/").pop()}
+                    src={mediaURL(a)}
+                    onPlay={(event) => {
+                      if (
+                        playing.current &&
+                        playing.current !== event.currentTarget
+                      )
+                        playing.current.pause();
+                      playing.current = event.currentTarget;
+                    }}
+                  />
+                  <Link className="subtle" to={assetURL(a.id)}>
+                    版本与来源
+                  </Link>
+                </article>
+              ) : (
+                <div key={a.id}>
+                  <AssetCard
+                    asset={a}
+                    selected={selected.includes(a.id)}
+                    onSelect={(checked) =>
+                      setSelected((old) =>
+                        checked
+                          ? old.length < 2
+                            ? [...old, a.id]
+                            : old
+                          : old.filter((id) => id !== a.id),
+                      )
+                    }
+                  />
+                  {coverOwner && a.media_type === "image" && (
+                    <Button
+                      className="default-image-action"
+                      variant="ghost"
+                      disabled={
+                        cover.isPending || coverOwner.cover_artifact_id === a.id
+                      }
+                      onClick={() =>
+                        cover.mutate({
+                          id: coverOwner.id,
+                          artifact_id: a.id,
+                          expected_version: coverOwner.version,
+                        })
+                      }
+                    >
+                      {coverOwner.cover_artifact_id === a.id
+                        ? "当前默认图"
+                        : "设为默认图"}
+                    </Button>
+                  )}
+                </div>
+              ),
+            )}
           </div>
           <Pagination page={result.data} onPage={setOffset} />
         </>

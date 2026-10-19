@@ -250,3 +250,36 @@ func TestCoverOwnershipAndConflict(t *testing.T) {
 		t.Fatal(r)
 	}
 }
+
+func TestCharacterDefaultsToTurnaroundAndKeepsExplicitCover(t *testing.T) {
+	s := fixture(t)
+	c := create(t, s, "character", "角色", Record{"physical": Record{"height_cm": Record{"value": nil, "unit": "cm", "status": "unknown", "source": nil}}})
+	sheet, err := s.Register(testctx, Record{"entity_id": c["id"], "path": pngFile(t, s, "sheet.png"), "role": "turnaround"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	portrait, err := s.Register(testctx, Record{"entity_id": c["id"], "path": pngFile(t, s, "portrait.png"), "role": "portrait"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err = s.Register(testctx, Record{"entity_id": c["id"], "path": pngFile(t, s, "look.png"), "role": "look"}); err != nil {
+		t.Fatal(err)
+	}
+	current, err := s.Entity(testctx, Text(c["id"]))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if current["cover_artifact_id"] != sheet["id"] {
+		t.Fatal("newer look replaced default turnaround", current["cover_artifact_id"])
+	}
+	if _, err = s.SetCover(testctx, Record{"id": c["id"], "artifact_id": portrait["id"], "expected_version": current["version"]}); err != nil {
+		t.Fatal(err)
+	}
+	current, err = s.Entity(testctx, Text(c["id"]))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if current["cover_artifact_id"] != portrait["id"] {
+		t.Fatal("explicit default ignored")
+	}
+}

@@ -43,6 +43,7 @@ import {
   EntityCard,
 } from "@/components/shared";
 import { EntityEditor } from "@/components/entity-editor";
+import { CharacterOverview } from "@/components/character-overview";
 import { EntityAssets } from "@/components/entity-assets";
 import { ProfileSections, Readable } from "@/components/profile";
 import {
@@ -76,9 +77,9 @@ export default function EntityPage() {
     ["profile", "资料总览"],
     ...(e.type === "character"
       ? [
-          ["appearance", "外观锚点"],
+          ["images", "图片资源"],
           ["looks", "服装造型"],
-          ["expressions", "表情动作"],
+
           ["voice", "声音"],
         ]
       : []),
@@ -133,7 +134,13 @@ export default function EntityPage() {
         </Link>
         {e.parent_id && <Link to={entityURL(e.parent_id)}>查看所属对象</Link>}
       </div>
-      <div className="entity-header">
+      <div
+        className={
+          e.type === "character"
+            ? "entity-header character-header"
+            : "entity-header"
+        }
+      >
         <div className="entity-cover">
           {e.cover_artifact_id ? (
             <img src={thumb(e.cover_artifact_id)} alt={e.name} />
@@ -197,7 +204,19 @@ export default function EntityPage() {
           ))}
         </TabsList>
         <TabsContent value="profile">
-          <ProfileSections metadata={m} keys={profileKeys} />
+          {e.type === "character" ? (
+            <CharacterOverview
+              entity={e}
+              onImages={() =>
+                setParams((p) => {
+                  p.set("tab", "images");
+                  return p;
+                })
+              }
+            />
+          ) : (
+            <ProfileSections metadata={m} keys={profileKeys} />
+          )}
           {e.type === "look" && (
             <ProfileSections
               metadata={m}
@@ -258,15 +277,22 @@ export default function EntityPage() {
         <TabsContent value="expressions">
           <EntityAssets entity={id} defaultRole="expression" />
         </TabsContent>
+        <TabsContent value="images">
+          <EntityAssets
+            key={id + ":images"}
+            entity={id}
+            mediaType="image"
+            coverOwner={e}
+          />
+        </TabsContent>
         <TabsContent value="voice">
-          <div className="panel">
-            <h2>声源、音色与配音</h2>
-            <p>原始声音、处理样本与实际台词分别分类，按具体版本查看和试听。</p>
+          <details className="voice-profile">
+            <summary>声音资料与录制说明</summary>
             <Readable
               value={m.voice || m.voice_profile || m.voice_references || null}
             />
-          </div>
-          <EntityAssets entity={id} defaultRole="source_audio" />
+          </details>
+          <EntityAssets key={id + ":audio"} entity={id} mediaType="audio" />
         </TabsContent>
         <TabsContent value="production">
           <StoryWorkspace entity={e} />

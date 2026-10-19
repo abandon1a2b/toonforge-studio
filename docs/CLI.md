@@ -37,3 +37,5 @@
 退出0成功；2输入/业务错误；3版本冲突；4对象不存在。错误 JSON 写 stderr，不混入 stdout。`describe` 提供机器可读策略概览。
 
 HTTP GET: overview、entities、entity、artifacts、artifact、documents、selections、issues、events、tags、settings、pending、inbox、jobs、health、context、collections；file/thumb/waveform/audio-preview 处理媒体。POST: entity/create/update/archive/cover/export/visit、artifact/register/update、revision/review、selection/set、issue/save、import/refresh/apply、jobs/create/cancel、backup/create、settings/save、tags/rename、collections/save；上传用 multipart `/api/v2/upload`。所有 JSON 写入要求 Content-Type: application/json，并与 CLI 使用相同校验。
+
+角色图片可使用 `turnaround`（三视图/设定表）、`portrait`（头像/特写）、`expression`（表情）、`action`（动作）、`look`（服装）、`reference`（其他参考）作为role。`cover-set`明确指定的图片优先于自动三视图展示；该操作不等于验收或替换剧本引用。
