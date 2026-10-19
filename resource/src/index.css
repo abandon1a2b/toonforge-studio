@@ -2035,3 +2035,126 @@ details[open] > summary {
     grid-template-columns: 1fr;
   }
 }
+
+/* Keep button links readable despite the base anchor reset. */
+a[data-slot="button"][data-variant="default"] {
+  color: #fff;
+}
+a[data-slot="button"][data-variant="destructive"] {
+  color: white;
+}
+.story-header {
+  gap: 12px;
+  margin: 8px 0 12px;
+}
+.story-header .entity-cover {
+  width: 80px;
+  height: 56px;
+  border-radius: 6px;
+}
+.story-header .entity-title h1 {
+  font-size: 21px;
+  margin: 0;
+}
+.story-header .entity-title .eyebrow {
+  display: none;
+}
+.story-header .entity-actions {
+  max-width: none;
+}
+.story-tabs,
+.story-workspace > [data-slot="tabs"] {
+  gap: 0;
+}
+.story-tabs > [data-slot="tabs-list"] {
+  margin-bottom: 0;
+  padding-bottom: 5px;
+}
+.story-tabs > [data-slot="tabs-content"] {
+  margin-top: 8px;
+  min-width: 0;
+}
+.story-workspace {
+  min-width: 0;
+}
+.story-workspace .workspace-summary {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0 0 8px;
+  margin: 0;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.story-workspace .workspace-summary strong {
+  font-size: 17px;
+  letter-spacing: 0;
+}
+.story-workspace .workspace-summary > div {
+  gap: 6px;
+}
+.story-workspace .workspace-tabs {
+  padding: 2px;
+  background: transparent;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  width: 100%;
+  justify-content: flex-start;
+}
+.story-workspace .workspace-tabs button {
+  padding: 5px 10px;
+}
+.story-workspace [data-slot="tabs-content"] {
+  margin-top: 8px;
+  min-width: 0;
+}
+.story-workspace .filter-bar {
+  margin: 6px 0 10px;
+  gap: 8px;
+}
+.story-workspace .panel {
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+}
+.audio-resource-list {
+  display: block;
+  min-width: 0;
+}
+.audio-resource-row {
+  grid-column: 1 / -1;
+  min-width: 0;
+  grid-template-columns: 18px minmax(0, 1fr) minmax(180px, 300px) 80px;
+  gap: 12px;
+  padding: 8px 0;
+}
+.audio-resource-row audio {
+  min-width: 0;
+  max-width: 100%;
+}
+.audio-resource-title > a {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (max-width: 760px) {
+  .story-header .entity-cover {
+    width: 60px;
+    height: 44px;
+  }
+  .story-header .entity-actions {
+    width: auto;
+  }
+  .audio-resource-row {
+    grid-template-columns: 18px minmax(0, 1fr) 80px;
+    gap: 8px;
+  }
+  .audio-resource-row audio {
+    grid-column: 2 / -1;
+    grid-row: 2;
+  }
+  .story-workspace .workspace-summary {
+    gap: 10px;
+  }
+}

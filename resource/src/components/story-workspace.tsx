@@ -56,7 +56,7 @@ export function StoryWorkspace({ entity: e }: { entity: Entity }) {
   const [pack, setPack] = useState(false);
   const children = e.children || [];
   return (
-    <>
+    <div className="story-workspace">
       <div className="workspace-summary">
         <div>
           <strong>{children.filter((c) => c.type === "shot").length}</strong>
@@ -122,7 +122,7 @@ export function StoryWorkspace({ entity: e }: { entity: Entity }) {
         </TabsContent>
       </Tabs>
       {pack && <ContextDialog story={e.id} onClose={() => setPack(false)} />}
-    </>
+    </div>
   );
 }
 function useSaveMetadata(e: Entity) {
@@ -714,7 +714,12 @@ function StorySound({ entity: e }: { entity: Entity }) {
           {!cues.size && <Empty title="尚未登记台词声音关系" />}
         </div>
       ) : (
-        <EntityAssets key={view} entity={e.id} defaultRole={view} />
+        <EntityAssets
+          key={view}
+          entity={e.id}
+          defaultRole={view}
+          mediaType="audio"
+        />
       )}
     </>
   );

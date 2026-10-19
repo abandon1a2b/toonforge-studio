@@ -76,7 +76,7 @@ export default function EntityPage() {
   const e = data.data,
     m = e.metadata;
   const tabs = [
-    ["profile", "资料总览"],
+    ...(e.type === "story" ? [] : [["profile", "资料总览"]]),
     ...(e.type === "character"
       ? [
           ["images", "图片资源"],
@@ -145,7 +145,9 @@ export default function EntityPage() {
         className={
           e.type === "character"
             ? "entity-header character-header"
-            : "entity-header"
+            : e.type === "story"
+              ? "entity-header story-header"
+              : "entity-header"
         }
       >
         <div className="entity-cover">
@@ -194,14 +196,16 @@ export default function EntityPage() {
         </div>
       </div>
       <Tabs
-        value={tab}
+        value={e.type === "story" && tab === "profile" ? "pipeline" : tab}
         onValueChange={(value) =>
           setParams((p) => {
             p.set("tab", value);
             return p;
           })
         }
-        className="entity-tabs"
+        className={
+          e.type === "story" ? "entity-tabs story-tabs" : "entity-tabs"
+        }
       >
         <TabsList>
           {tabs.map(([v, t]) => (
