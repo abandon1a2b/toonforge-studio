@@ -119,7 +119,7 @@ export default function Home() {
             ) : (
               <span>剧本 · 选角 · 场景 · 分镜 · 声音</span>
             )}
-            <Button asChild>
+            <Button variant="secondary" asChild>
               <Link
                 to={
                   story
