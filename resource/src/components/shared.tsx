@@ -138,12 +138,23 @@ export function EntityCard({ entity: e }: { entity: Entity }) {
         )}
       </div>
       <div className="entity-card-body">
-        <div className="flex justify-between gap-2">
-          <h3>{e.name}</h3>
+        <div className="entity-card-heading">
+          <h3 title={e.name}>{e.name}</h3>
           <small>v{e.version}</small>
         </div>
-        <p>{e.type === "character" ? height(e) : labels[e.type]}</p>
-        <Tags tags={e.tags.slice(0, 3)} plain />
+        <div className="entity-card-meta">
+          <span
+            className="entity-card-facts"
+            title={e.type === "character" ? height(e) : labels[e.type]}
+          >
+            {e.type === "character" ? height(e) : labels[e.type]}
+          </span>
+          {e.tags.length > 0 && (
+            <span className="entity-card-tags" title={e.tags.join(" · ")}>
+              {e.tags.join(" · ")}
+            </span>
+          )}
+        </div>
       </div>
     </Link>
   );

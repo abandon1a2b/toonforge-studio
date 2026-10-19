@@ -1884,3 +1884,80 @@ details[open] > summary {
     grid-row: 2;
   }
 }
+
+/* Library browsing prioritizes visible assets over page introductions. */
+.library-page .filter-bar {
+  margin: 0 0 12px;
+  gap: 8px;
+}
+.library-page > [data-slot="tabs"] {
+  margin-bottom: 10px;
+}
+.library-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+.library-page .entity-grid,
+.library-page .asset-grid {
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 10px;
+}
+.entity-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+.entity-card-heading h3 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.entity-card-heading small {
+  flex-shrink: 0;
+}
+.entity-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 10px;
+  line-height: 20px;
+  color: #929bab;
+}
+.entity-card-facts,
+.entity-card-tags {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.entity-card-facts {
+  flex-shrink: 0;
+  max-width: 65%;
+}
+.entity-card-tags {
+  min-width: 0;
+}
+.library-page .entity-card-body {
+  padding: 6px 10px;
+}
+.library-page .entity-image {
+  height: 136px;
+}
+@media (max-width: 600px) {
+  .library-page .entity-grid,
+  .library-page .asset-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .library-page .filter-bar > input {
+    max-width: none;
+  }
+  .library-toolbar-actions {
+    margin-left: 0;
+  }
+}

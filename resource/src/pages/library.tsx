@@ -109,36 +109,8 @@ export default function Library({ search = false }: { search?: boolean }) {
       ? "公共素材"
       : labels[type] + "资料库";
   return (
-    <>
-      <div className="page-intro">
-        <div>
-          <p className="eyebrow">
-            LIBRARY / {search ? "SEARCH" : type.toUpperCase()}
-          </p>
-          <h1>{title}</h1>
-          <p>
-            {type === "character"
-              ? "身份、造型、表情与声音，围绕同一个角色维护。"
-              : type === "scene"
-                ? "空间布局、机位参考与场景变体，形成可复用的地点。"
-                : type === "story"
-                  ? "原稿与改编分开维护，每篇固定自己的角色、场景与素材版本。"
-                  : "整理可复用的资料与媒体，查看它们在故事中的使用。"}
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" asChild>
-            <Link to="/import">
-              <Upload size={15} />
-              导入
-            </Link>
-          </Button>
-          <Button onClick={() => update({ create: "1" })}>
-            <Plus size={15} />
-            新建{labels[currentType] || "资料"}
-          </Button>
-        </div>
-      </div>
+    <section className="library-page" aria-label={title}>
+      <h1 className="sr-only">{title}</h1>
       {(search || type === "public") && (
         <Tabs
           value={mediaMode ? "media" : search ? "entities" : publicType}
@@ -234,18 +206,30 @@ export default function Library({ search = false }: { search?: boolean }) {
             {view === "grid" ? <List size={17} /> : <Grid2X2 size={17} />}
           </Button>
         )}
+        {mediaMode && (
+          <label className="check-label">
+            <Checkbox
+              checked={params.get("history") === "1"}
+              onCheckedChange={(checked) =>
+                update({ history: checked === true ? "1" : "", offset: "" })
+              }
+            />
+            包含历史版本
+          </label>
+        )}
+        <div className="library-toolbar-actions">
+          <Button variant="outline" asChild>
+            <Link to="/import">
+              <Upload size={15} />
+              导入
+            </Link>
+          </Button>
+          <Button type="button" onClick={() => update({ create: "1" })}>
+            <Plus size={15} />
+            新建{labels[currentType] || "资料"}
+          </Button>
+        </div>
       </form>
-      {mediaMode && (
-        <label className="subtle inline-flex gap-2 mb-4">
-          <Checkbox
-            checked={params.get("history") === "1"}
-            onCheckedChange={(checked) =>
-              update({ history: checked === true ? "1" : "", offset: "" })
-            }
-          />
-          包含历史版本
-        </label>
-      )}
       {page.isPending ? (
         <Loading />
       ) : page.error ? (
@@ -303,6 +287,6 @@ export default function Library({ search = false }: { search?: boolean }) {
         onOpenChange={(v) => update({ create: v ? "1" : "" })}
         type={currentType || "character"}
       />
-    </>
+    </section>
   );
 }
