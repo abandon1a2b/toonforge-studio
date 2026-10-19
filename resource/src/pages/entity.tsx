@@ -1,3 +1,4 @@
+import { StoryPipeline } from "@/components/story-pipeline";
 import { useEffect, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -55,7 +56,8 @@ import { StoryWorkspace, ShotWorkspace } from "@/components/story-workspace";
 export default function EntityPage() {
   const { id = "" } = useParams();
   const [params, setParams] = useSearchParams();
-  const tab = params.get("tab") || "profile";
+  const tab =
+    params.get("tab") || (id.startsWith("story:") ? "pipeline" : "profile");
   const [edit, setEdit] = useState(false),
     [newLook, setNewLook] = useState(false),
     [archive, setArchive] = useState(false),
@@ -84,11 +86,16 @@ export default function EntityPage() {
         ]
       : []),
     ...(e.type === "scene" ? [["layout", "空间与机位"]] : []),
-    ...(e.type === "story" ? [["production", "剧本与制作"]] : []),
+    ...(e.type === "story"
+      ? [
+          ["pipeline", "故事与版本"],
+          ["production", "制作空间"],
+        ]
+      : []),
     ...(["shot", "clip"].includes(e.type) ? [["shot", "演出与引用"]] : []),
     ["assets", "分类资源"],
     ["usage", "使用记录"],
-    ["versions", "版本"],
+    ["versions", "资料修订"],
     ["feedback", "审阅"],
   ];
   const profileKeys =
@@ -293,6 +300,9 @@ export default function EntityPage() {
             />
           </details>
           <EntityAssets key={id + ":audio"} entity={id} mediaType="audio" />
+        </TabsContent>
+        <TabsContent value="pipeline">
+          <StoryPipeline entity={e} />
         </TabsContent>
         <TabsContent value="production">
           <StoryWorkspace entity={e} />

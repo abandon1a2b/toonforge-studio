@@ -154,6 +154,8 @@ func (s *Server) api(w http.ResponseWriter, r *http.Request) {
 	var e error
 	if r.Method == "GET" || r.Method == "HEAD" {
 		switch route {
+		case "workflow":
+			out, e = s.Store.Workflow(ctx, q.Get("story"))
 		case "overview":
 			out, e = s.Store.Overview(ctx)
 		case "entities":
@@ -213,6 +215,8 @@ func (s *Server) api(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		switch route {
+		case "workflow/create":
+			out, e = s.Store.CreateWorkflowVersion(ctx, d)
 		case "entity/cover":
 			out, e = s.Store.SetCover(ctx, d)
 		case "entity/create":

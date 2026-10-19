@@ -520,7 +520,7 @@ func (s *Store) SaveIssue(ctx context.Context, d Record) (Record, error) {
 	return Record{"id": id, "status": status, "version": version}, nil
 }
 func (s *Store) Overview(ctx context.Context) (Record, error) {
-	rows, e := s.Query(ctx, "SELECT type,count(*) n FROM entities WHERE archived=0 GROUP BY type")
+	rows, e := s.Query(ctx, "SELECT type,count(*) n FROM entities e WHERE archived=0 AND NOT EXISTS(SELECT 1 FROM studio_story_members sm WHERE sm.entity_id=e.id AND sm.story_id<>e.id) GROUP BY type")
 	if e != nil {
 		return nil, e
 	}

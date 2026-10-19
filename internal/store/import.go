@@ -394,6 +394,9 @@ func (s *Store) Refresh(ctx context.Context, progress func(int), cancelled func(
 			progress((i + 1) * 100 / max(len(media), 1))
 		}
 	}
+	if e := s.initWorkflow(ctx); e != nil {
+		return nil, e
+	}
 	return Record{"new_artifacts": newCount, "unchanged": unchanged, "warnings": warnings}, nil
 }
 func (s *Store) Inbox(ctx context.Context) (Record, error) {

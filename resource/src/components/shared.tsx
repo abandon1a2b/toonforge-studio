@@ -145,9 +145,19 @@ export function EntityCard({ entity: e }: { entity: Entity }) {
         <div className="entity-card-meta">
           <span
             className="entity-card-facts"
-            title={e.type === "character" ? height(e) : labels[e.type]}
+            title={
+              e.type === "character"
+                ? height(e)
+                : e.type === "story"
+                  ? "故事 · 剧本 / 分镜版本"
+                  : labels[e.type]
+            }
           >
-            {e.type === "character" ? height(e) : labels[e.type]}
+            {e.type === "character"
+              ? height(e)
+              : e.type === "story"
+                ? "故事 · 剧本 / 分镜版本"
+                : labels[e.type]}
           </span>
           {e.tags.length > 0 && (
             <span className="entity-card-tags" title={e.tags.join(" · ")}>

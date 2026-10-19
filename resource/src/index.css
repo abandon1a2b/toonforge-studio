@@ -1961,3 +1961,77 @@ details[open] > summary {
     margin-left: 0;
   }
 }
+.pipeline-stages {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin: 18px 0;
+}
+.pipeline-stages > section {
+  min-width: 0;
+  border-top: 2px solid var(--border);
+  padding-top: 10px;
+}
+.pipeline-stages h3 {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.pipeline-node {
+  border-bottom: 1px solid var(--border);
+  padding: 10px 0;
+  font-size: 12px;
+}
+.pipeline-node button {
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+}
+.pipeline-node strong,
+.pipeline-node span {
+  display: block;
+}
+.pipeline-node span {
+  color: var(--muted-foreground);
+  margin: 5px 0;
+  font-size: 11px;
+}
+.pipeline-node[data-selected="true"] {
+  background: #eef0ff;
+}
+.pipeline-node a {
+  color: var(--primary);
+  font-size: 11px;
+}
+.pipeline-create {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+  margin-top: 20px;
+}
+.pipeline-create h3,
+.pipeline-content {
+  grid-column: 1/-1;
+}
+.pipeline-create label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+}
+.pipeline-create button[type="submit"] {
+  justify-self: start;
+}
+.pipeline-snapshot {
+  border-top: 1px solid var(--border);
+  padding: 12px 0;
+}
+@media (max-width: 760px) {
+  .pipeline-stages {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .pipeline-create {
+    grid-template-columns: 1fr;
+  }
+}

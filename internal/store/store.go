@@ -178,6 +178,10 @@ func Open(root, actor string) (*Store, error) {
 		db.Close()
 		return nil, err
 	}
+	if err = s.initWorkflow(context.Background()); err != nil {
+		db.Close()
+		return nil, err
+	}
 	return s, nil
 }
 func (s *Store) Close() error { return s.DB.Close() }
@@ -298,6 +302,9 @@ func (s *Store) Entities(ctx context.Context, f Filter) (Page, error) {
 		archived = 1
 	}
 	args := []any{archived}
+	if f.Type == "story" && f.Entity == "" {
+		where = append(where, "NOT EXISTS(SELECT 1 FROM studio_story_members sm WHERE sm.entity_id=e.id AND sm.story_id<>e.id)")
+	}
 	if f.Type != "" {
 		where = append(where, "e.type=?")
 		args = append(args, f.Type)

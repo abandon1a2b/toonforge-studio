@@ -143,6 +143,24 @@ func newRoot() *cobra.Command {
 	serve.Flags().Int("port", 8795, "Loopback port")
 	serve.Flags().Bool("remote-read-only", true, "Require local editing credential; remote visitors can only read")
 	serve.Flags().Bool("dev", false, "Allow local Vite development origin")
+	root.AddCommand(a.mutation("workflow-create", "Create an immutable script/boards/voice/video version with source_id", func(c context.Context, s *store.Store, d store.Record) (any, error) {
+		return s.CreateWorkflowVersion(c, d)
+	}))
+	workflow := &cobra.Command{Use: "workflow", Short: "Show a story and its stage-version lineage", RunE: func(c *cobra.Command, _ []string) error {
+		s, e := store.Open(a.root, "cli")
+		if e != nil {
+			return e
+		}
+		defer s.Close()
+		id, _ := c.Flags().GetString("story")
+		v, e := s.Workflow(c.Context(), id)
+		if e != nil {
+			return e
+		}
+		return output(v)
+	}}
+	workflow.Flags().String("story", "", "Story or legacy production ID")
+	root.AddCommand(workflow)
 	root.AddCommand(serve)
 	for _, name := range []string{"workspace", "health", "pending", "inbox", "events", "tags", "collections", "jobs"} {
 		n := name
